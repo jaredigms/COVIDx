@@ -45,9 +45,10 @@ const SurveyQuestions = ({ match }) => {
             .slice(24, 33)
             .filter((x) => x.value)
             .map((x) => x.name),
+          form_name: 'HealthCheckin'
         };
         console.log(survey_answers);
-        customPost('/health_checkin/response', user.accessToken, survey_answers)
+        customPost('/submit_form', user.accessToken, survey_answers)
       },
     });
   }, []);
