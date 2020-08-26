@@ -90,8 +90,9 @@
     "yarn": "^1.22.4",
     "yup": "^0.28.1"
   },
+  "proxy": "http://localhost:8080",
   "scripts": {
-    "start": "cross-env REACT_APP_ENDPOINT_URI=\"http://localhost:8080\" react-app-rewired start",
+    "start": "react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-app-rewired eject",

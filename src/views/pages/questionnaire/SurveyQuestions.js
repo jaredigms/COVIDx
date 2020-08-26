@@ -1,9 +1,8 @@
 import React, { useEffect, useContext } from "react";
 import { Card, CardBody } from "reactstrap";
 import "./questionnaire.scss";
-import { run } from "tripetto-runner-autoscroll";
-import { Export } from "tripetto-runner-foundation";
-
+import * as TripettoCollector from "tripetto-collector";
+import * as TripettoCollectorRolling from "tripetto-collector-rolling";
 import { UserContext } from "App";
 import { forms, parsingRules } from "./questions/utils";
 import { customPost } from "utility/customFetch";
@@ -13,43 +12,34 @@ const SurveyQuestions = ({ match }) => {
   console.log(match.params.questionType);
 
   useEffect(() => {
-    run({
-      element: document.getElementById("survey"),
+    TripettoCollectorRolling.run({
+      element: document.getElementById("survey"), // Or supply your own element here
       definition: forms[match.params.questionType],
-      styles: {
-        contract: { name: "tripetto-runner-autoscroll", version: "3.5.3" },
-        showNavigation: "auto",
+      style: {
+        centerActiveBlock: true,
         showProgressbar: true,
         showEnumerators: false,
-        showScrollbar: false,
+        showNavigation: true,
+        showScrollbar: true,
         autoFocus: false,
-        verticalAlignment: "middle",
-        direction: "vertical",
-        hidePast: false,
-        hideUpcoming: false,
-        showSeparateSubmit: false,
-        showPreviousButton: true,
       },
-      l10n: {
-        contract: { name: "tripetto-runner-autoscroll", version: "3.5.3" },
-      },
-      onSubmit: (instance) => {
-        const fields = Export.fields(instance).fields;
+      onFinish: (instance) => {
+        const fields = TripettoCollector.Export.fields(instance).fields;
 
         console.log(fields);
         const survey_answers = {
           form: match.params.questionType,
           responses: parsingRules[match.params.questionType](fields),
         };
-        console.log("survey_answers:", survey_answers);
-        if (survey_answers["responses"].hasOwnProperty("how_are_you_feeling")) {
-          customPost(
-            "/health_checkin/response",
-            user.accessToken,
-            survey_answers
-          );
-          console.log("Your answer has been submitted!");
-        }
+        console.log(survey_answers);
+        // if (survey_answers["responses"].hasOwnProperty("how_are_you_feeling")) {
+        customPost(
+          "/submit_form",
+          user.accessToken,
+          survey_answers
+        );
+        console.log("Your answer has been submitted!");
+        // }
       },
     });
   }, []);

@@ -1,4 +1,4 @@
-const baseEndpoint = process.env.REACT_APP_ENDPOINT_URI;
+const baseEndpoint = process.env.REACT_APP_ENDPOINT_URI || '';
 
 export const customGet = async (url, token) => {
   const getPayload = {
